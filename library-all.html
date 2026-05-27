@@ -777,6 +777,17 @@ function viewDocument(office, docName) {
     window.location.href = `library.html?office=${encodeURIComponent(office)}`;
 }
 
+// Check URL parameters for office filter
+const urlParams = new URLSearchParams(window.location.search);
+const officeParam = urlParams.get('office');
+
+if (officeParam) {
+    // Set the office filter dropdown
+    document.getElementById('officeFilter').value = officeParam;
+    // Trigger filter
+    filterDocuments();
+}
+
 // Initial render
 renderDocuments();
 </script>

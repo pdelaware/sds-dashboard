@@ -706,6 +706,22 @@ searchInput.addEventListener('input', (e) => {
 function viewLibrary(office) {
     window.location.href = `library.html?office=${encodeURIComponent(office)}`;
 }
+
+// Make entire location cards clickable
+document.querySelectorAll('.location-card').forEach(card => {
+    // Make the whole card clickable
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+        // Don't trigger if clicking the button (it has its own handler)
+        if (e.target.classList.contains('view-btn') || e.target.closest('.view-btn')) {
+            return;
+        }
+        const office = card.dataset.office;
+        if (office) {
+            viewLibrary(office);
+        }
+    });
+});
 </script>
 
 </body>
