@@ -1,0 +1,53 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║  🚀 GET YOUR GITHUB LINK IN 10 MINUTES                            ║
+║                                                                    ║
+║  Your app will be at:                                             ║
+║  https://YOUR_USERNAME.github.io/sds-dashboard                    ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+STEP 1: Create GitHub Repository
+─────────────────────────────────
+Go to: https://github.com/new
+Name: sds-dashboard
+Click: "Create repository"
+
+STEP 2: Push Code (Replace YOUR_USERNAME with your GitHub username)
+─────────────────────────────────
+cd ~/sds-dashboard
+git remote add origin https://github.com/YOUR_USERNAME/sds-dashboard.git
+git push -u origin main
+
+STEP 3: Add Secrets
+─────────────────────────────────
+Go to: Your repo → Settings → Secrets and variables → Actions
+Add these secrets (get values from Firebase Console):
+- REACT_APP_API_URL
+- REACT_APP_FIREBASE_API_KEY
+- REACT_APP_FIREBASE_AUTH_DOMAIN
+- REACT_APP_FIREBASE_PROJECT_ID
+- REACT_APP_FIREBASE_STORAGE_BUCKET
+- REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+- REACT_APP_FIREBASE_APP_ID
+
+STEP 4: Enable GitHub Pages
+─────────────────────────────────
+Your repo → Settings → Pages
+Source: Branch "gh-pages", folder "/ (root)"
+Click: Save
+
+STEP 5: Deploy
+─────────────────────────────────
+cd ~/sds-dashboard/frontend
+npm install
+npm run deploy
+
+╔════════════════════════════════════════════════════════════════════╗
+║  ✅ DONE! Your link:                                              ║
+║  https://YOUR_USERNAME.github.io/sds-dashboard                    ║
+║                                                                    ║
+║  Wait 2-3 minutes, then open the link!                           ║
+╚════════════════════════════════════════════════════════════════════╝
+
+📖 Full Instructions: Read QUICKSTART_GITHUB.md or GITHUB_DEPLOY.md
