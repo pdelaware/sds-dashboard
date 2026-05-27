@@ -1,0 +1,82 @@
+.app-header {
+  background: white;
+  border-bottom: 3px solid #0176D3;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.menu-button:hover {
+  background-color: #f3f2f2;
+  border-radius: 0.25rem;
+}
+
+.menu-button .slds-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: #706e6b;
+}
+
+.app-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-logo {
+  font-size: 1.5rem;
+}
+
+.app-name h1 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0176D3;
+  margin: 0;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 600px;
+  margin: 0 2rem;
+}
+
+.header-search input {
+  width: 100%;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-role-badge {
+  padding: 0.25rem 0.75rem;
+  background-color: #e0f3ff;
+  color: #014486;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .header-search {
+    display: none;
+  }
+
+  .app-name h1 {
+    font-size: 0.875rem;
+  }
+}

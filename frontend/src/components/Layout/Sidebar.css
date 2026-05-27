@@ -1,0 +1,122 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 240px;
+  background: white;
+  border-right: 1px solid #dddbda;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  z-index: 99;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 4rem;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.slds-nav-vertical {
+  padding: 1rem 0;
+}
+
+.slds-nav-vertical__item {
+  margin-bottom: 0.25rem;
+}
+
+.slds-nav-vertical__action {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #080707;
+  text-decoration: none;
+  gap: 0.75rem;
+  transition: background-color 0.2s;
+}
+
+.slds-nav-vertical__action:hover {
+  background-color: #f3f2f2;
+  color: #0176D3;
+}
+
+.slds-nav-vertical__item.slds-is-active .slds-nav-vertical__action {
+  background-color: #e0f3ff;
+  color: #0176D3;
+  border-left: 4px solid #0176D3;
+  font-weight: 700;
+}
+
+.sidebar.collapsed .slds-nav-vertical__action {
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.sidebar.collapsed .slds-nav-vertical__action-text {
+  display: none;
+}
+
+.slds-icon_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slds-icon_small {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.sidebar-footer {
+  padding: 1.5rem 1rem;
+  border-top: 1px solid #dddbda;
+  background: #f3f2f2;
+}
+
+.sidebar.collapsed .sidebar-footer {
+  padding: 1rem 0.5rem;
+}
+
+.sidebar-footer-info {
+  text-align: center;
+}
+
+.sidebar-footer-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #080707;
+  margin: 0 0 0.25rem 0;
+}
+
+.sidebar-footer-subtitle {
+  font-size: 0.75rem;
+  color: #706e6b;
+  margin: 0;
+}
+
+.sidebar.collapsed .sidebar-footer-title,
+.sidebar.collapsed .sidebar-footer-subtitle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar:not(.collapsed) {
+    transform: translateX(0);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  }
+}
