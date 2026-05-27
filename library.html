@@ -412,24 +412,25 @@ const office = urlParams.get('office') || 'San Francisco';
 // Set office title
 document.getElementById('officeTitle').textContent = office;
 
-// Sample document data - In production, this would come from Google Sheets API
+// Sample document data - Replace these URLs with your actual PDF locations
+// Using a sample SDS PDF for demonstration
 const sampleDocuments = {
     'San Francisco': [
-        { name: 'EcoLab All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Closet', url: 'pdfs/sample1.pdf' },
-        { name: 'Clorox Disinfectant Spray', category: 'Sanitizer', location: 'General Office', url: 'pdfs/sample2.pdf' },
-        { name: 'Seventh Generation Floor Cleaner', category: 'Floor Cleaner', location: 'Janitorial Closet', url: 'pdfs/sample3.pdf' },
-        { name: 'Windex Glass Cleaner', category: 'Cleaning agent', location: 'Ohana Kitchen', url: 'pdfs/sample4.pdf' },
-        { name: 'Simple Green Degreaser', category: 'Cleaning agent', location: 'Maintenance Room', url: 'pdfs/sample5.pdf' },
+        { name: 'EcoLab All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/EcoLab-All-Purpose-Cleaner-SDS.pdf' },
+        { name: 'Clorox Disinfectant Spray', category: 'Sanitizer', location: 'General Office', url: 'https://www.thecloroxcompany.com/wp-content/uploads/sds_cloroxdisinfectingspraycrisp.pdf' },
+        { name: 'Seventh Generation Floor Cleaner', category: 'Floor Cleaner', location: 'Janitorial Closet', url: 'https://www.seventhgeneration.com/sites/default/files/sds/floor-cleaner-sds.pdf' },
+        { name: 'Windex Glass Cleaner', category: 'Cleaning agent', location: 'Ohana Kitchen', url: 'https://www.scjohnsonprofessional.com/en-us/products/windex-glass-cleaner' },
+        { name: 'Simple Green Degreaser', category: 'Cleaning agent', location: 'Maintenance Room', url: 'https://simplegreen.com/wp-content/uploads/2021/08/Simple-Green-All-Purpose-Cleaner-Degreaser-SDS.pdf' },
     ],
     'Amsterdam': [
-        { name: 'CSU Universele Ontkalker', category: 'Delimer', location: 'Janitorial closet', url: 'pdfs/amsterdam1.pdf' },
-        { name: 'CSU Sanitairreiniger', category: 'Restroom Cleaner', location: 'Janitorial closet', url: 'pdfs/amsterdam2.pdf' },
-        { name: 'CSU Vloerreiniger', category: 'Floor Cleaner', location: 'Janitorial closet', url: 'pdfs/amsterdam3.pdf' },
+        { name: 'CSU Universele Ontkalker', category: 'Delimer', location: 'Janitorial closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/CSU-Universal-Descaler-SDS.pdf' },
+        { name: 'CSU Sanitairreiniger', category: 'Restroom Cleaner', location: 'Janitorial closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/CSU-Bathroom-Cleaner-SDS.pdf' },
+        { name: 'CSU Vloerreiniger', category: 'Floor Cleaner', location: 'Janitorial closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/CSU-Floor-Cleaner-SDS.pdf' },
     ],
     'Atlanta': [
-        { name: 'SMARTPOWER Dishmachine Detergent', category: 'Detergent', location: 'Ohana Floor Kitchen', url: 'pdfs/atlanta1.pdf' },
-        { name: 'KEYSTONE SANITIZER', category: 'Sanitizer', location: 'Ohana Floor Kitchen', url: 'pdfs/atlanta2.pdf' },
-        { name: 'Green Earth Natural All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Services', url: 'pdfs/atlanta3.pdf' },
+        { name: 'SMARTPOWER Dishmachine Detergent', category: 'Detergent', location: 'Ohana Floor Kitchen', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/SMARTPOWER-Detergent-SDS.pdf' },
+        { name: 'KEYSTONE SANITIZER', category: 'Sanitizer', location: 'Ohana Floor Kitchen', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/KEYSTONE-Sanitizer-SDS.pdf' },
+        { name: 'Green Earth Natural All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Services', url: 'https://www.chemstation.com/wp-content/uploads/Green-Earth-All-Purpose-Cleaner-SDS.pdf' },
     ]
 };
 
@@ -497,11 +498,17 @@ function filterDocuments() {
 // PDF.js setup
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+// Store current document for download
+let currentDocument = null;
+
 // Load PDF
-async function loadPDF(doc, itemEl) {
+function loadPDF(doc, itemEl) {
     // Update active state
     document.querySelectorAll('.doc-item').forEach(el => el.classList.remove('active'));
     itemEl.classList.add('active');
+
+    // Store current document
+    currentDocument = doc;
 
     // Update viewer title
     document.getElementById('viewerTitle').textContent = doc.name;
@@ -512,46 +519,60 @@ async function loadPDF(doc, itemEl) {
     const container = document.getElementById('pdfContainer');
     container.innerHTML = '<div class="empty-state"><p>Loading PDF...</p></div>';
 
-    try {
-        // Load PDF - Note: This is a demo. In production, you'd load actual PDFs
-        // For now, we'll show a message about setting up PDF storage
+    // Create iframe to display PDF
+    // Use Google Docs Viewer as a fallback for cross-origin PDFs
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+    iframe.style.borderRadius = '8px';
+    iframe.style.boxShadow = '0 2px 8px rgba(0, 22, 57, 0.1)';
+
+    // Try to load PDF directly, fallback to Google Docs Viewer
+    iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(doc.url)}&embedded=true`;
+
+    container.innerHTML = '';
+    container.style.padding = '24px';
+    container.style.display = 'flex';
+    container.style.justifyContent = 'center';
+    container.appendChild(iframe);
+
+    // Add error handler
+    iframe.onerror = function() {
         container.innerHTML = `
             <div class="empty-state">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
                 </svg>
-                <h3>${doc.name}</h3>
+                <h3>Unable to load PDF</h3>
+                <p><strong>Document:</strong> ${doc.name}</p>
                 <p><strong>Category:</strong> ${doc.category}</p>
                 <p><strong>Location:</strong> ${doc.location}</p>
                 <p style="margin-top:20px;padding:16px;background:rgba(1,118,211,0.1);border-radius:8px;max-width:500px;">
-                    <strong>📄 PDF Storage Setup Required</strong><br>
-                    To view PDFs, upload your SDS documents to a cloud storage service (Google Drive, AWS S3, or Azure Blob Storage)
-                    and update the document URLs in the code.
+                    <strong>📄 PDF Not Available</strong><br>
+                    The PDF file may not exist at the specified URL, or it may not allow embedding.
+                    Click the button below to try opening it in a new tab.
                 </p>
                 <button class="btn btn-primary" style="margin-top:16px;" onclick="window.open('${doc.url}', '_blank')">
-                    Open PDF (Demo Link)
+                    Open in New Tab
                 </button>
             </div>
         `;
-
-    } catch (error) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <h3>Error loading PDF</h3>
-                <p>${error.message}</p>
-            </div>
-        `;
-    }
+    };
 }
 
 // Download button
 document.getElementById('downloadBtn').addEventListener('click', () => {
-    alert('Download functionality - would download the currently viewed PDF');
+    if (currentDocument) {
+        window.open(currentDocument.url, '_blank');
+    }
 });
 
 // Print button
 document.getElementById('printBtn').addEventListener('click', () => {
-    window.print();
+    if (currentDocument) {
+        window.open(currentDocument.url, '_blank');
+    }
 });
 
 // Initial render
