@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '@salesforce/design-system-react';
 
 const DocumentUpload = () => {
   return (
@@ -9,9 +8,9 @@ const DocumentUpload = () => {
         <p className="page-description">Upload new Safety Data Sheets to the library</p>
       </div>
       <div className="content-wrapper">
-        <Card>
+        <div style={{ background: 'white', padding: '2rem', borderRadius: '0.5rem' }}>
           <p>Drag-and-drop upload interface will be implemented here.</p>
-        </Card>
+        </div>
       </div>
     </div>
   );

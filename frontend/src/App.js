@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth } from './config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Components
 import Header from './components/Layout/Header';
@@ -14,9 +13,6 @@ import DocumentUpload from './components/Documents/DocumentUpload';
 import Analytics from './components/Analytics/Analytics';
 import Settings from './components/Settings/Settings';
 
-// Context
-import { AuthProvider, useAuth } from './context/AuthContext';
-
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -25,10 +21,7 @@ function PrivateRoute({ children }) {
   if (loading) {
     return (
       <div className="loading-container">
-        <div className="slds-spinner slds-spinner_medium">
-          <div className="slds-spinner__dot-a"></div>
-          <div className="slds-spinner__dot-b"></div>
-        </div>
+        <div className="spinner">Loading...</div>
       </div>
     );
   }

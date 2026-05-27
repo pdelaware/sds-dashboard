@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Card } from '@salesforce/design-system-react';
 
 const DocumentDetail = () => {
   const { id } = useParams();
@@ -11,10 +10,10 @@ const DocumentDetail = () => {
         <h1 className="page-title">Document Details</h1>
       </div>
       <div className="content-wrapper">
-        <Card>
+        <div style={{ background: 'white', padding: '2rem', borderRadius: '0.5rem' }}>
           <p>Document ID: {id}</p>
           <p>PDF Viewer and full document details will be implemented here.</p>
-        </Card>
+        </div>
       </div>
     </div>
   );

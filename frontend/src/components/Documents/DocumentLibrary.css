@@ -2,24 +2,65 @@
   min-height: 100vh;
 }
 
-.search-section {
+.search-card {
+  background: white;
+  border-radius: 0.5rem;
   padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .search-input-wrapper {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1.5rem;
 }
 
-.search-input-wrapper .slds-input {
+.search-input {
   flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #dddbda;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+}
+
+.search-button {
+  padding: 0.75rem 2rem;
+  background: #0176D3;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background: #014486;
 }
 
 .filters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: #080707;
+}
+
+.form-field select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #dddbda;
+  border-radius: 0.25rem;
 }
 
 .results-header {
@@ -39,13 +80,17 @@
 }
 
 .document-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .document-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .document-card-header {
@@ -56,16 +101,7 @@
 }
 
 .document-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.document-icon .slds-icon {
-  width: 40px;
-  height: 40px;
+  font-size: 2rem;
 }
 
 .document-title {
@@ -106,5 +142,26 @@
 
 .document-date {
   font-size: 0.75rem;
+  color: #706e6b;
+}
+
+.empty-state-card {
+  background: white;
+  padding: 4rem 2rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-card p {
   color: #706e6b;
 }

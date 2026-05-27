@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '@salesforce/design-system-react';
 
 const Analytics = () => {
   return (
@@ -9,9 +8,9 @@ const Analytics = () => {
         <p className="page-description">View reports and analytics for SDS compliance</p>
       </div>
       <div className="content-wrapper">
-        <Card>
+        <div style={{ background: 'white', padding: '2rem', borderRadius: '0.5rem' }}>
           <p>Charts and analytics will be implemented here.</p>
-        </Card>
+        </div>
       </div>
     </div>
   );

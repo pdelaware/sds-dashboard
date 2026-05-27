@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '@salesforce/design-system-react';
 import { useAuth } from '../../context/AuthContext';
 
 const Settings = () => {
@@ -12,13 +11,14 @@ const Settings = () => {
         <p className="page-description">Manage your profile and preferences</p>
       </div>
       <div className="content-wrapper">
-        <Card heading="User Profile">
-          <div style={{ padding: '1rem' }}>
-            <p><strong>Email:</strong> {userProfile?.email}</p>
-            <p><strong>Name:</strong> {userProfile?.name}</p>
-            <p><strong>Role:</strong> {userProfile?.role}</p>
+        <div style={{ background: 'white', padding: '2rem', borderRadius: '0.5rem' }}>
+          <h2>User Profile</h2>
+          <div style={{ marginTop: '1rem' }}>
+            <p><strong>Email:</strong> {userProfile?.email || 'Not available'}</p>
+            <p><strong>Name:</strong> {userProfile?.name || 'Not available'}</p>
+            <p><strong>Role:</strong> {userProfile?.role || 'Not available'}</p>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

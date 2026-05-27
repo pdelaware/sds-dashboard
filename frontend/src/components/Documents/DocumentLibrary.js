@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Card, Button, Input } from '@salesforce/design-system-react';
 import axios from 'axios';
 import './DocumentLibrary.css';
 
 const DocumentLibrary = () => {
   const { getAuthToken } = useAuth();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [documents, setDocuments] = useState([]);
   const [offices, setOffices] = useState([]);
@@ -32,7 +31,6 @@ const DocumentLibrary = () => {
       const token = await getAuthToken();
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Build query params
       const params = new URLSearchParams();
       if (filters.office) params.append('office', filters.office);
       if (filters.category) params.append('category', filters.category);
@@ -57,7 +55,6 @@ const DocumentLibrary = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setSearchParams({ search: searchQuery });
   };
 
   const formatDate = (dateStr) => {
@@ -69,10 +66,7 @@ const DocumentLibrary = () => {
   if (loading) {
     return (
       <div className="loading-container">
-        <div className="slds-spinner slds-spinner_medium">
-          <div className="slds-spinner__dot-a"></div>
-          <div className="slds-spinner__dot-b"></div>
-        </div>
+        <div className="spinner">Loading...</div>
       </div>
     );
   }
@@ -85,96 +79,78 @@ const DocumentLibrary = () => {
       </div>
 
       <div className="content-wrapper">
-        {/* Search and Filters */}
-        <Card>
+        <div className="search-card">
           <form onSubmit={handleSearch} className="search-section">
             <div className="search-input-wrapper">
-              <Input
+              <input
+                type="search"
                 placeholder="Search by product name, manufacturer, CAS number..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                iconLeft={{ name: 'search', category: 'utility' }}
+                className="search-input"
               />
-              <Button label="Search" variant="brand" type="submit" />
+              <button type="submit" className="search-button">Search</button>
             </div>
 
             <div className="filters-grid">
-              <div className="slds-form-element">
-                <label className="slds-form-element__label">Office</label>
-                <div className="slds-form-element__control">
-                  <select
-                    className="slds-select"
-                    value={filters.office}
-                    onChange={(e) => setFilters({ ...filters, office: e.target.value })}
-                  >
-                    <option value="">All Offices</option>
-                    {offices.map((office) => (
-                      <option key={office.id} value={office.id}>{office.name}</option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-field">
+                <label>Office</label>
+                <select
+                  value={filters.office}
+                  onChange={(e) => setFilters({ ...filters, office: e.target.value })}
+                >
+                  <option value="">All Offices</option>
+                  {offices.map((office) => (
+                    <option key={office.id} value={office.id}>{office.name}</option>
+                  ))}
+                </select>
               </div>
 
-              <div className="slds-form-element">
-                <label className="slds-form-element__label">Category</label>
-                <div className="slds-form-element__control">
-                  <select
-                    className="slds-select"
-                    value={filters.category}
-                    onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                  >
-                    <option value="">All Categories</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.name}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-field">
+                <label>Category</label>
+                <select
+                  value={filters.category}
+                  onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
 
-              <div className="slds-form-element">
-                <label className="slds-form-element__label">Status</label>
-                <div className="slds-form-element__control">
-                  <select
-                    className="slds-select"
-                    value={filters.status}
-                    onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                  >
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="expiring">Expiring Soon</option>
-                    <option value="expired">Expired</option>
-                  </select>
-                </div>
+              <div className="form-field">
+                <label>Status</label>
+                <select
+                  value={filters.status}
+                  onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                >
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="expiring">Expiring Soon</option>
+                  <option value="expired">Expired</option>
+                </select>
               </div>
             </div>
           </form>
-        </Card>
+        </div>
 
-        {/* Results */}
         <div className="results-header">
           <h2>{documents.length} documents found</h2>
         </div>
 
         {documents.length === 0 ? (
-          <Card>
-            <div className="empty-state">
-              <div className="empty-state-icon">📄</div>
-              <h3 className="empty-state-title">No documents found</h3>
-              <p className="empty-state-description">
-                Try adjusting your search or filters
-              </p>
-            </div>
-          </Card>
+          <div className="empty-state-card">
+            <div className="empty-state-icon">📄</div>
+            <h3>No documents found</h3>
+            <p>Try adjusting your search or filters</p>
+          </div>
         ) : (
           <div className="documents-grid">
             {documents.map((doc) => (
-              <Card key={doc.id} className="document-card" onClick={() => navigate(`/documents/${doc.id}`)}>
+              <div key={doc.id} className="document-card" onClick={() => navigate(`/documents/${doc.id}`)}>
                 <div className="document-card-header">
-                  <div className="document-icon">
-                    <svg className="slds-icon" aria-hidden="true">
-                      <use xlinkHref="/assets/icons/doctype-sprite/svg/symbols.svg#pdf"></use>
-                    </svg>
-                  </div>
+                  <div className="document-icon">📄</div>
                   <span className={`status-badge ${doc.status}`}>{doc.status}</span>
                 </div>
                 <h3 className="document-title">{doc.productName}</h3>
@@ -183,7 +159,7 @@ const DocumentLibrary = () => {
                   <span className="document-category">{doc.category}</span>
                   <span className="document-date">Updated: {formatDate(doc.uploadDate?.toDate?.() || doc.uploadDate)}</span>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         )}
