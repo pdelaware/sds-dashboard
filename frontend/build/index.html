@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SDS Global Dashboard — Salesforce Workplace Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SDS Global Dashboard — Salesforce Workplace Services
+   Based on H&S Registrar design system
+   ============================================================ */
+
+:root {
+    /* Salesforce blue family */
+    --sf-blue-100: #f3f8ff;
+    --sf-blue-200: #d8e6fe;
+    --sf-blue-300: #aac9ff;
+    --sf-blue-400: #5497ff;
+    --sf-blue-500: #0176D3;
+    --sf-blue-600: #014486;
+    --sf-blue-700: #032d60;
+    --sf-blue-800: #001639;
+    --sf-cloud-cyan: #1AB9FF;
+
+    /* Three-color status (green / amber / red) */
+    --status-green:  #2e844a;
+    --status-green-bg: #e0f3e7;
+    --status-amber:  #c66a00;
+    --status-amber-bg: #fff1d6;
+    --status-red:    #ba0517;
+    --status-red-bg: #fbe0e0;
+
+    /* Neutrals */
+    --ink-900: #16213c;
+    --ink-700: #2b3a52;
+    --ink-500: #5b6a85;
+    --ink-300: #8b97ad;
+    --ink-200: #c9d1de;
+    --line-100: #e3e8ef;
+    --line-50:  #eef2f8;
+    --canvas:   #f4f6fb;
+    --surface:  #ffffff;
+    --surface-2:#fafbfd;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --shadow-sm: 0 1px 2px rgba(0, 22, 57, 0.04), 0 1px 3px rgba(0, 22, 57, 0.06);
+    --shadow-md: 0 1px 2px rgba(0, 22, 57, 0.04), 0 8px 24px rgba(0, 22, 57, 0.06);
+    --shadow-lg: 0 1px 3px rgba(0, 22, 57, 0.05), 0 12px 36px rgba(0, 22, 57, 0.10);
+
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-display: 'DM Serif Display', 'Times New Roman', serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+    font-family: var(--font-sans);
+    color: var(--ink-900);
+    background: var(--canvas);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 100vh;
+}
+a { color: var(--sf-blue-500); text-decoration: none; }
+a:hover { color: var(--sf-blue-600); }
+button { font-family: inherit; cursor: pointer; }
+
+/* =========================================================
+   Sidebar — slim, navy, restrained
+   ========================================================= */
+.sidebar {
+    background: linear-gradient(180deg, #001a44 0%, #001025 100%);
+    color: rgba(255, 255, 255, 0.78);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+    overflow-y: auto;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 18px 16px;
+}
+.brand-cloud {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(26, 185, 255, 0.18), rgba(1, 118, 211, 0.04));
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 6px 12px rgba(1, 118, 211, 0.18);
+}
+.brand-name {
+    font-family: var(--font-display);
+    color: white;
+    font-size: 20px;
+    line-height: 1;
+}
+.brand-sub {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.46);
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 10px;
+}
+.sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 14px;
+    margin: 1px 0;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background-color .14s ease, color .14s ease;
+    position: relative;
+}
+.sidebar nav a:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: white;
+    text-decoration: none;
+}
+.sidebar nav a.active {
+    background: linear-gradient(90deg, rgba(1, 118, 211, 0.36), rgba(1, 118, 211, 0.10));
+    color: white;
+    box-shadow: inset 0 0 0 1px rgba(26, 185, 255, 0.20);
+}
+.sidebar nav a.active::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--sf-cloud-cyan), var(--sf-blue-500));
+    box-shadow: 0 0 12px rgba(26, 185, 255, 0.6);
+}
+.nav-icon { color: rgba(255, 255, 255, 0.54); flex-shrink: 0; }
+.sidebar nav a.active .nav-icon { color: var(--sf-cloud-cyan); }
+.sidebar-foot {
+    margin-top: auto;
+    padding: 12px 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sf-blue-400), var(--sf-blue-600));
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 10px rgba(1, 118, 211, 0.4);
+}
+.user-name { color: white; font-size: 12.5px; font-weight: 600; }
+.user-role { color: rgba(255, 255, 255, 0.5); font-size: 10.5px; margin-top: 1px; }
+
+/* =========================================================
+   Topbar — slim, single-line page title
+   ========================================================= */
+main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+}
+.topbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: saturate(180%) blur(10px);
+    -webkit-backdrop-filter: saturate(180%) blur(10px);
+    border-bottom: 1px solid var(--line-100);
+    padding: 10px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    gap: 24px;
+    height: 52px;
+}
+.topbar-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink-900);
+    letter-spacing: -0.1px;
+}
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.btn {
+    padding: 7px 14px;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .14s ease;
+}
+.btn-primary {
+    background: var(--sf-blue-500);
+    color: white;
+}
+.btn-primary:hover {
+    background: var(--sf-blue-600);
+    box-shadow: 0 4px 12px rgba(1, 118, 211, 0.3);
+}
+
+/* =========================================================
+   Content
+   ========================================================= */
+#view {
+    padding: 28px;
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Stats grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+.stat-card {
+    background: white;
+    border: 1px solid var(--line-100);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: all .2s ease;
+}
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--ink-900);
+    line-height: 1;
+}
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
+}
+.stat-icon.blue {
+    background: linear-gradient(135deg, var(--sf-blue-200), var(--sf-blue-100));
+}
+.stat-icon.green {
+    background: linear-gradient(135deg, #b8e5c8, var(--status-green-bg));
+}
+.stat-icon.amber {
+    background: linear-gradient(135deg, #ffe8b8, var(--status-amber-bg));
+}
+
+/* Section headers */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink-900);
+    margin: 0;
+}
+
+/* Office grid */
+.office-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    margin-top: 32px;
+}
+.office-card {
+    background: white;
+    border: 1px solid var(--line-100);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all .2s ease;
+    position: relative;
+    overflow: hidden;
+}
+.office-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--sf-blue-300);
+}
+.office-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--sf-cloud-cyan), var(--sf-blue-500));
+}
+.office-flag {
+    font-size: 32px;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+.office-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink-900);
+    margin: 0 0 4px 0;
+}
+.office-region {
+    font-size: 13px;
+    color: var(--ink-500);
+    margin-bottom: 16px;
+}
+.office-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.office-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-700);
+}
+.office-meta-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--ink-300);
+}
+.office-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-50);
+}
+.office-stat {
+    text-align: center;
+}
+.office-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--sf-blue-500);
+    line-height: 1;
+}
+.office-stat-label {
+    font-size: 11px;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* Hero section */
+.hero {
+    background: linear-gradient(135deg, var(--sf-blue-700) 0%, var(--sf-blue-800) 100%);
+    border-radius: var(--radius-lg);
+    padding: 48px 40px;
+    margin-bottom: 32px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(26, 185, 255, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(30%, -30%);
+}
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+.hero-title {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 400;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+}
+.hero-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 24px 0;
+    max-width: 600px;
+}
+.hero-actions {
+    display: flex;
+    gap: 12px;
+}
+.hero-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+.hero-btn.primary {
+    background: white;
+    color: var(--sf-blue-600);
+}
+.hero-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+}
+.hero-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.hero-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+    body {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        display: none;
+    }
+    .office-grid {
+        grid-template-columns: 1fr;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-cloud" aria-hidden="true">
+            <svg viewBox="0 0 40 40" width="36" height="36">
+                <defs>
+                    <linearGradient id="gradCloud" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#1AB9FF"/>
+                        <stop offset="100%" stop-color="#0176D3"/>
+                    </linearGradient>
+                </defs>
+                <path fill="url(#gradCloud)" d="M30 22a7 7 0 0 0-13.3-3 6 6 0 0 0-9.7 5.5A6 6 0 0 0 13 31h17a5 5 0 0 0 0-9z"/>
+            </svg>
+        </div>
+        <div>
+            <div class="brand-name">SDS</div>
+            <div class="brand-sub">Global Dashboard</div>
+        </div>
+    </div>
+
+    <nav>
+        <a href="#dashboard" class="active">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M4 13h6V4H4zm0 7h6v-5H4zm8 0h6v-9h-6zm0-16v5h6V4z"/></svg>
+            <span>Dashboard</span>
+        </a>
+        <a href="#offices">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 2C7 2 3 6 3 11s4 11 9 11 9-6 9-11-4-9-9-9zm0 2c1.5 0 2.7 1.4 3.6 3.5-1.1.3-2.3.5-3.6.5s-2.5-.2-3.6-.5C9.3 5.4 10.5 4 12 4zM5.1 9c1.4.5 3 .8 4.7.9-.1.7-.1 1.4-.1 2.1s.1 1.4.1 2.1c-1.7.1-3.3.4-4.7.9-.4-.9-.6-1.9-.6-3s.2-2.1.6-3zm6.9 11c-1.5 0-2.7-1.4-3.6-3.5 1.1-.3 2.3-.5 3.6-.5s2.5.2 3.6.5C14.7 18.6 13.5 20 12 20zm6.9-5c-1.4-.5-3-.8-4.7-.9.1-.7.1-1.4.1-2.1s-.1-1.4-.1-2.1c1.7-.1 3.3-.4 4.7-.9.4.9.6 1.9.6 3s-.2 2.1-.6 3z"/></svg>
+            <span>Offices</span>
+        </a>
+        <a href="#library">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M5 3h14a1 1 0 0 1 1 1v17l-8-4-8 4V4a1 1 0 0 1 1-1z"/></svg>
+            <span>Library</span>
+        </a>
+        <a href="#upload">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5z"/></svg>
+            <span>Upload</span>
+        </a>
+        <a href="#analytics">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M3 13h2v8H3zm4-6h2v14H7zm4-4h2v18h-2zm4 9h2v9h-2zm4-3h2v12h-2z"/></svg>
+            <span>Analytics</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-foot">
+        <div class="user-chip">
+            <div class="avatar">PD</div>
+            <div class="user-meta">
+                <div class="user-name">Prescott Delaware</div>
+                <div class="user-role">Workplace Services</div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<main>
+    <header class="topbar">
+        <h1 class="topbar-title">Dashboard</h1>
+        <div class="topbar-right">
+            <button class="btn btn-primary">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
+                <span>Upload SDS</span>
+            </button>
+        </div>
+    </header>
+
+    <section id="view">
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Safety Data Sheets</h1>
+                <p class="hero-subtitle">Centralized SDS management across all Salesforce global offices. Access, search, and manage safety documentation with confidence.</p>
+                <div class="hero-actions">
+                    <button class="hero-btn primary">Browse Library</button>
+                    <button class="hero-btn secondary">View All Locations</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+                </div>
+                <div class="stat-label">Total Documents</div>
+                <div class="stat-value">1,247</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2C7 2 3 6 3 11s4 11 9 11 9-6 9-11-4-9-9-9z"/></svg>
+                </div>
+                <div class="stat-label">Global Offices</div>
+                <div class="stat-value">9</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                </div>
+                <div class="stat-label">Product Categories</div>
+                <div class="stat-value">17</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                </div>
+                <div class="stat-label">Compliance Ready</div>
+                <div class="stat-value">100%</div>
+            </div>
+        </div>
+
+        <!-- Offices -->
+        <div class="section-header">
+            <h2 class="section-title">Global Offices</h2>
+        </div>
+
+        <div class="office-grid">
+            <!-- San Francisco -->
+            <div class="office-card">
+                <div class="office-flag">🇺🇸</div>
+                <h3 class="office-name">San Francisco</h3>
+                <div class="office-region">Americas · Headquarters</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>Salesforce Tower, Market Street</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Pacific Time (PST/PDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">342</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">12</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New York -->
+            <div class="office-card">
+                <div class="office-flag">🇺🇸</div>
+                <h3 class="office-name">New York</h3>
+                <div class="office-region">Americas · Northeast</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>3 Bryant Park, Midtown Manhattan</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Eastern Time (EST/EDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">178</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">9</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Irvine -->
+            <div class="office-card">
+                <div class="office-flag">🇺🇸</div>
+                <h3 class="office-name">Irvine</h3>
+                <div class="office-region">Americas · West Coast</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>18400 Von Karman Ave</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Pacific Time (PST/PDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">124</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">8</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boston -->
+            <div class="office-card">
+                <div class="office-flag">🇺🇸</div>
+                <h3 class="office-name">Boston</h3>
+                <div class="office-region">Americas · Northeast</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>100 Summer Street</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Eastern Time (EST/EDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">92</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">7</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chicago -->
+            <div class="office-card">
+                <div class="office-flag">🇺🇸</div>
+                <h3 class="office-name">Chicago</h3>
+                <div class="office-region">Americas · Midwest</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>111 W Illinois Street</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Central Time (CST/CDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">86</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">7</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dallas -->
+            <div class="office-card">
+                <div class="office-flag">🇺🇸</div>
+                <h3 class="office-name">Dallas</h3>
+                <div class="office-region">Americas · South Central</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>13350 Dallas Parkway</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Central Time (CST/CDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">78</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">6</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atlanta -->
+            <div class="office-card">
+                <div class="office-flag">🇺🇸</div>
+                <h3 class="office-name">Atlanta</h3>
+                <div class="office-region">Americas · Southeast</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>Atlanta Tower</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Eastern Time (EST/EDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">68</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">6</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toronto -->
+            <div class="office-card">
+                <div class="office-flag">🇨🇦</div>
+                <h3 class="office-name">Toronto</h3>
+                <div class="office-region">Americas · Canada</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>Bay Adelaide Centre, 333 Bay St</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Eastern Time (EST/EDT)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">142</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">9</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amsterdam -->
+            <div class="office-card">
+                <div class="office-flag">🇳🇱</div>
+                <h3 class="office-name">Amsterdam</h3>
+                <div class="office-region">EMEA · Netherlands</div>
+                <div class="office-meta">
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span>Edge Olympic, Zuidas</span>
+                    </div>
+                    <div class="office-meta-item">
+                        <svg class="office-meta-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span>Central European Time (CET/CEST)</span>
+                    </div>
+                </div>
+                <div class="office-stats">
+                    <div class="office-stat">
+                        <div class="office-stat-value">137</div>
+                        <div class="office-stat-label">SDS Files</div>
+                    </div>
+                    <div class="office-stat">
+                        <div class="office-stat-value">10</div>
+                        <div class="office-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+// Simple navigation
+document.querySelectorAll('.sidebar nav a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+</script>
+
+</body>
+</html>
