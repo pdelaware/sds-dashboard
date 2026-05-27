@@ -1,0 +1,153 @@
+@import '~@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Salesforce Sans', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f3f2f2;
+}
+
+code {
+  font-family: 'SF Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Salesforce Blue Brand Colors */
+:root {
+  --sf-primary: #0176D3;
+  --sf-cloud-blue: #1B96FF;
+  --sf-success: #4BCA81;
+  --sf-warning: #FE9339;
+  --sf-error: #EA001E;
+  --sf-neutral: #F3F2F2;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* App container */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f3f2f2;
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  margin-left: 240px;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+}
+
+/* Page header */
+.page-header {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #dddbda;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #080707;
+  margin-bottom: 0.5rem;
+}
+
+.page-description {
+  color: #706e6b;
+  font-size: 0.875rem;
+}
+
+/* Content padding */
+.content-wrapper {
+  padding: 0 2rem 2rem;
+}
+
+/* Card styles */
+.slds-card {
+  margin-bottom: 1rem;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-badge.active {
+  background-color: #c9f0dd;
+  color: #0b7a3e;
+}
+
+.status-badge.expiring {
+  background-color: #fed49a;
+  color: #a14b00;
+}
+
+.status-badge.expired {
+  background-color: #feded8;
+  color: #ba0517;
+}
+
+/* Loading spinner */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: #dddbda;
+  margin-bottom: 1rem;
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #080707;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+  color: #706e6b;
+  margin-bottom: 1.5rem;
+}

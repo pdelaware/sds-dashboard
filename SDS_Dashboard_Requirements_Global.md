@@ -1,3 +1,6 @@
+<!-- g-docs:doc_id=1AR3bjkVDndU6gTCA-8GPm-qyxlzVkIzUj0ZmhGLes40 -->
+**Google Doc:** https://docs.google.com/document/d/1AR3bjkVDndU6gTCA-8GPm-qyxlzVkIzUj0ZmhGLes40/edit
+
 # Salesforce Global SDS Library - Project Requirements
 
 **🌐 Building Trust Through Safety Excellence Worldwide**

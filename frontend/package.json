@@ -1,0 +1,46 @@
+{
+  "name": "sds-dashboard-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Salesforce Global SDS Library",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "@salesforce/design-system-react": "^0.10.52",
+    "@salesforce-ux/design-system": "^2.22.2",
+    "firebase": "^10.7.1",
+    "axios": "^1.6.2",
+    "date-fns": "^2.30.0",
+    "react-pdf": "^7.6.0"
+  },
+  "devDependencies": {
+    "react-scripts": "5.0.1",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "eslint": "^8.54.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
