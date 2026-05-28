@@ -858,78 +858,132 @@ function loadPDF(doc, itemEl) {
     document.getElementById('downloadBtn').style.display = 'inline-flex';
     document.getElementById('printBtn').style.display = 'inline-flex';
 
-    // Show loading state
+    // Show chemical information card
     const container = document.getElementById('pdfContainer');
-    container.innerHTML = '<div class="empty-state"><p>Loading SDS data...</p></div>';
-
-    // Create iframe to display SDS
-    const iframe = document.createElement('iframe');
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.border = 'none';
-    iframe.style.borderRadius = '8px';
-    iframe.style.boxShadow = '0 2px 8px rgba(0, 22, 57, 0.1)';
-
-    // Use ChemicalSafety.com search with CAS number
-    if (doc.cas) {
-        iframe.src = `https://chemicalsafety.com/sds-search/?q=${doc.cas}`;
-    } else if (doc.url) {
-        // Fallback to direct URL if available
-        iframe.src = doc.url;
-    }
-
-    let loaded = false;
-    iframe.onload = function() {
-        loaded = true;
-    };
-
-    // Show helpful info panel alongside iframe
     container.innerHTML = '';
-    container.style.padding = '24px';
-    container.style.display = 'block';
+    container.style.padding = '48px 24px';
+    container.style.display = 'flex';
+    container.style.justifyContent = 'center';
+    container.style.alignItems = 'flex-start';
+    container.style.overflowY = 'auto';
 
-    // Info panel
-    const infoPanel = document.createElement('div');
-    infoPanel.style.background = 'white';
-    infoPanel.style.padding = '16px';
-    infoPanel.style.borderRadius = '8px';
-    infoPanel.style.marginBottom = '16px';
-    infoPanel.style.border = '1px solid var(--line-100)';
-    infoPanel.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: start;">
-            <div>
-                <div style="font-size: 14px; font-weight: 600; color: var(--ink-900); margin-bottom: 8px;">${doc.name}</div>
-                <div style="font-size: 12px; color: var(--ink-500); display: flex; gap: 16px; flex-wrap: wrap;">
-                    <span><strong>CAS:</strong> ${doc.cas || 'N/A'}</span>
+    const card = document.createElement('div');
+    card.style.maxWidth = '800px';
+    card.style.width = '100%';
+    card.innerHTML = `
+        <div style="background: white; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 22, 57, 0.12); overflow: hidden;">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, var(--sf-blue-500), var(--sf-cloud-cyan)); padding: 32px; color: white;">
+                <h2 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700;">${doc.name}</h2>
+                <div style="font-size: 14px; opacity: 0.95; display: flex; gap: 24px; flex-wrap: wrap; margin-top: 12px;">
+                    <span><strong>CAS:</strong> ${doc.cas}</span>
                     <span><strong>Category:</strong> ${doc.category}</span>
                     <span><strong>Location:</strong> ${doc.location}</span>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="window.open('https://chemicalsafety.com/sds-search/?q=${doc.cas}', '_blank')" style="white-space: nowrap;">
-                Open in New Tab
-            </button>
+
+            <!-- Body -->
+            <div style="padding: 32px;">
+                <!-- Warning -->
+                <div style="display: flex; align-items: start; gap: 12px; padding: 16px; background: rgba(255, 152, 0, 0.1); border-left: 4px solid #ff9800; border-radius: 8px; margin-bottom: 24px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff9800" style="flex-shrink: 0; margin-top: 2px;">
+                        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                    </svg>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: #e65100; margin-bottom: 4px;">Safety Data Sheet Required</div>
+                        <div style="font-size: 13px; color: #5d4037;">Always review the complete SDS before handling this chemical.</div>
+                    </div>
+                </div>
+
+                <!-- Quick Info -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
+                    <div style="padding: 16px; background: var(--line-50); border-radius: 8px;">
+                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-500); margin-bottom: 6px;">CAS Number</div>
+                        <div style="font-size: 20px; font-weight: 700; color: var(--sf-blue-500);">${doc.cas}</div>
+                    </div>
+                    <div style="padding: 16px; background: var(--line-50); border-radius: 8px;">
+                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-500); margin-bottom: 6px;">Category</div>
+                        <div style="font-size: 16px; font-weight: 600; color: var(--ink-900);">${doc.category}</div>
+                    </div>
+                    <div style="padding: 16px; background: var(--line-50); border-radius: 8px;">
+                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-500); margin-bottom: 6px;">Location</div>
+                        <div style="font-size: 16px; font-weight: 600; color: var(--ink-900);">${doc.location}</div>
+                    </div>
+                </div>
+
+                <!-- SDS Resources -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--ink-900); margin: 0 0 16px 0;">Safety Data Sheet Resources</h3>
+                    <div style="display: grid; gap: 12px;">
+                        <a href="https://chemicalsafety.com/sds-search/?q=${doc.cas}" target="_blank"
+                           style="display: flex; align-items: center; gap: 16px; padding: 20px; background: white; border: 2px solid var(--line-100); border-radius: 10px; text-decoration: none; transition: all 0.2s;"
+                           onmouseover="this.style.borderColor='var(--sf-blue-500)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(1,118,211,0.15)'"
+                           onmouseout="this.style.borderColor='var(--line-100)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--sf-blue-500), var(--sf-cloud-cyan)); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                                </svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 15px; color: var(--ink-900); margin-bottom: 4px;">ChemicalSafety.com</div>
+                                <div style="font-size: 13px; color: var(--ink-500);">Free SDS database • Search by CAS number</div>
+                            </div>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--sf-blue-500)" style="flex-shrink: 0;">
+                                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                            </svg>
+                        </a>
+
+                        <a href="https://pubchem.ncbi.nlm.nih.gov/compound/${doc.cas.replace(/-/g, '')}" target="_blank"
+                           style="display: flex; align-items: center; gap: 16px; padding: 20px; background: white; border: 2px solid var(--line-100); border-radius: 10px; text-decoration: none; transition: all 0.2s;"
+                           onmouseover="this.style.borderColor='var(--sf-blue-500)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(1,118,211,0.15)'"
+                           onmouseout="this.style.borderColor='var(--line-100)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #2e844a, #41b658); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                                    <path d="M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2v14H3v3c0 1.66 1.34 3 3 3h12c1.66 0 3-1.34 3-3V2l-1.5 1.5zM19 19c0 .55-.45 1-1 1s-1-.45-1-1v-3H8V5h11v14z"/>
+                                </svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 15px; color: var(--ink-900); margin-bottom: 4px;">PubChem Database</div>
+                                <div style="font-size: 13px; color: var(--ink-500);">NIH chemical database • Comprehensive safety data</div>
+                            </div>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--sf-blue-500)" style="flex-shrink: 0;">
+                                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                            </svg>
+                        </a>
+
+                        <a href="https://www.osha.gov/chemicaldata" target="_blank"
+                           style="display: flex; align-items: center; gap: 16px; padding: 20px; background: white; border: 2px solid var(--line-100); border-radius: 10px; text-decoration: none; transition: all 0.2s;"
+                           onmouseover="this.style.borderColor='var(--sf-blue-500)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(1,118,211,0.15)'"
+                           onmouseout="this.style.borderColor='var(--line-100)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #d32f2f, #f44336); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                                    <path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2zm0-6h2v4h-2z"/>
+                                </svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 15px; color: var(--ink-900); margin-bottom: 4px;">OSHA Chemical Data</div>
+                                <div style="font-size: 13px; color: var(--ink-500);">Occupational safety • Regulatory guidelines</div>
+                            </div>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--sf-blue-500)" style="flex-shrink: 0;">
+                                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div style="padding: 20px; background: var(--canvas); border-radius: 8px; border-left: 4px solid var(--sf-blue-500);">
+                    <div style="font-size: 13px; color: var(--ink-700); line-height: 1.7;">
+                        <strong style="color: var(--sf-blue-500);">📋 How to Access:</strong><br>
+                        Click any resource above to view the complete Safety Data Sheet. The SDS contains detailed hazard information, handling procedures, storage requirements, and emergency response protocols.
+                    </div>
+                </div>
+            </div>
         </div>
     `;
 
-    container.appendChild(infoPanel);
-    container.appendChild(iframe);
-
-    // If iframe doesn't load after 8 seconds, show helpful message
-    setTimeout(() => {
-        if (!loaded) {
-            const note = document.createElement('div');
-            note.style.marginTop = '16px';
-            note.style.padding = '12px 16px';
-            note.style.background = 'rgba(1, 118, 211, 0.1)';
-            note.style.borderRadius = '8px';
-            note.style.fontSize = '13px';
-            note.style.color = 'var(--ink-700)';
-            note.innerHTML = `
-                <strong>💡 Tip:</strong> If the SDS doesn't display, click "Open in New Tab" above to view it directly on ChemicalSafety.com
-            `;
-            container.appendChild(note);
-        }
-    }, 8000);
+    container.appendChild(card);
+}
 }
 
 // Download button
