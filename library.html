@@ -413,24 +413,24 @@ const office = urlParams.get('office') || 'San Francisco';
 document.getElementById('officeTitle').textContent = office;
 
 // Sample document data - Replace these URLs with your actual PDF locations
-// Using working sample SDS PDFs for demonstration
+// Using CAS numbers to fetch SDS from ChemicalSafety.com
 const sampleDocuments = {
     'San Francisco': [
-        { name: 'EcoLab All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Closet', url: 'https://www.ecolab.com/nam/united-states/pages/product-safety-data-sheets' },
-        { name: 'Clorox Disinfectant Spray', category: 'Sanitizer', location: 'General Office', url: 'https://www.cdc.gov/niosh/docs/81-123/pdfs/0054.pdf' },
-        { name: 'Seventh Generation Floor Cleaner', category: 'Floor Cleaner', location: 'Janitorial Closet', url: 'https://www.osha.gov/sites/default/files/publications/OSHA3514.pdf' },
-        { name: 'Windex Glass Cleaner', category: 'Cleaning agent', location: 'Ohana Kitchen', url: 'https://www.cdc.gov/niosh/docs/81-123/pdfs/0054.pdf' },
-        { name: 'Simple Green Degreaser', category: 'Cleaning agent', location: 'Maintenance Room', url: 'https://www.osha.gov/sites/default/files/publications/OSHA3492.pdf' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7681-52-9' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Janitorial Closet', cas: '1336-21-6' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7722-84-1' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
     ],
     'Amsterdam': [
-        { name: 'CSU Universele Ontkalker', category: 'Delimer', location: 'Janitorial closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/CSU-Universal-Descaler-SDS.pdf' },
-        { name: 'CSU Sanitairreiniger', category: 'Restroom Cleaner', location: 'Janitorial closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/CSU-Bathroom-Cleaner-SDS.pdf' },
-        { name: 'CSU Vloerreiniger', category: 'Floor Cleaner', location: 'Janitorial closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/CSU-Floor-Cleaner-SDS.pdf' },
+        { name: 'Acetic Acid (Vinegar Cleaner)', category: 'Delimer', location: 'Janitorial closet', cas: '64-19-7' },
+        { name: 'Sodium Hydroxide (Drain Cleaner)', category: 'Restroom Cleaner', location: 'Janitorial closet', cas: '1310-73-2' },
+        { name: 'D-Limonene (Floor Cleaner)', category: 'Floor Cleaner', location: 'Janitorial closet', cas: '5989-27-5' },
     ],
     'Atlanta': [
-        { name: 'SMARTPOWER Dishmachine Detergent', category: 'Detergent', location: 'Ohana Floor Kitchen', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/SMARTPOWER-Detergent-SDS.pdf' },
-        { name: 'KEYSTONE SANITIZER', category: 'Sanitizer', location: 'Ohana Floor Kitchen', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/KEYSTONE-Sanitizer-SDS.pdf' },
-        { name: 'Green Earth Natural All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Services', url: 'https://www.chemstation.com/wp-content/uploads/Green-Earth-All-Purpose-Cleaner-SDS.pdf' },
+        { name: 'Sodium Carbonate (Detergent)', category: 'Detergent', location: 'Ohana Floor Kitchen', cas: '497-19-8' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Ohana Floor Kitchen', cas: '68391-01-5' },
+        { name: 'Sodium Bicarbonate', category: 'All Purpose Cleaner', location: 'Janitorial Services', cas: '144-55-8' },
     ]
 };
 
@@ -468,6 +468,7 @@ function renderDocuments() {
             <div class="doc-meta">
                 <span class="doc-badge">${doc.category}</span>
                 <span>${doc.location}</span>
+                ${doc.cas ? `<span style="color: var(--sf-blue-500); font-weight: 500;">CAS: ${doc.cas}</span>` : ''}
             </div>
         `;
         item.addEventListener('click', () => loadPDF(doc, item));
@@ -501,7 +502,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 // Store current document for download
 let currentDocument = null;
 
-// Load PDF
+// Load PDF based on CAS number
 function loadPDF(doc, itemEl) {
     // Update active state
     document.querySelectorAll('.doc-item').forEach(el => el.classList.remove('active'));
@@ -517,9 +518,9 @@ function loadPDF(doc, itemEl) {
 
     // Show loading state
     const container = document.getElementById('pdfContainer');
-    container.innerHTML = '<div class="empty-state"><p>Loading PDF...</p></div>';
+    container.innerHTML = '<div class="empty-state"><p>Loading SDS data...</p></div>';
 
-    // Create iframe to display PDF
+    // Create iframe to display SDS
     const iframe = document.createElement('iframe');
     iframe.style.width = '100%';
     iframe.style.height = '100%';
@@ -527,82 +528,85 @@ function loadPDF(doc, itemEl) {
     iframe.style.borderRadius = '8px';
     iframe.style.boxShadow = '0 2px 8px rgba(0, 22, 57, 0.1)';
 
-    // Try direct embed first, then Google Docs Viewer
-    let loadAttempt = 0;
-    const tryLoad = () => {
-        if (loadAttempt === 0) {
-            // First try: Direct PDF embed (works for CORS-enabled PDFs)
-            iframe.src = doc.url;
-        } else {
-            // Second try: Google Docs Viewer
-            iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(doc.url)}&embedded=true`;
-        }
-    };
-
-    tryLoad();
+    // Use ChemicalSafety.com search with CAS number
+    if (doc.cas) {
+        iframe.src = `https://chemicalsafety.com/sds-search/?q=${doc.cas}`;
+    } else if (doc.url) {
+        // Fallback to direct URL if available
+        iframe.src = doc.url;
+    }
 
     let loaded = false;
     iframe.onload = function() {
         loaded = true;
     };
 
-    // If iframe doesn't load after 5 seconds, try fallback or show error
-    setTimeout(() => {
-        if (!loaded) {
-            if (loadAttempt === 0) {
-                loadAttempt++;
-                tryLoad();
-                // Give Google Docs Viewer another 5 seconds
-                setTimeout(() => {
-                    if (!loaded) {
-                        showError();
-                    }
-                }, 5000);
-            } else {
-                showError();
-            }
-        }
-    }, 5000);
-
-    function showError() {
-        container.innerHTML = `
-            <div class="empty-state">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
-                </svg>
-                <h3>Unable to load PDF preview</h3>
-                <p><strong>Document:</strong> ${doc.name}</p>
-                <p><strong>Category:</strong> ${doc.category}</p>
-                <p><strong>Location:</strong> ${doc.location}</p>
-                <p style="margin-top:20px;padding:16px;background:rgba(1,118,211,0.1);border-radius:8px;max-width:500px;">
-                    <strong>📄 Open Directly</strong><br>
-                    The PDF preview may not be available. Click below to open the document directly.
-                </p>
-                <button class="btn btn-primary" style="margin-top:16px;" onclick="window.open('${doc.url}', '_blank')">
-                    Open PDF in New Tab
-                </button>
-            </div>
-        `;
-    }
-
+    // Show helpful info panel alongside iframe
     container.innerHTML = '';
     container.style.padding = '24px';
-    container.style.display = 'flex';
-    container.style.justifyContent = 'center';
+    container.style.display = 'block';
+
+    // Info panel
+    const infoPanel = document.createElement('div');
+    infoPanel.style.background = 'white';
+    infoPanel.style.padding = '16px';
+    infoPanel.style.borderRadius = '8px';
+    infoPanel.style.marginBottom = '16px';
+    infoPanel.style.border = '1px solid var(--line-100)';
+    infoPanel.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <div style="font-size: 14px; font-weight: 600; color: var(--ink-900); margin-bottom: 8px;">${doc.name}</div>
+                <div style="font-size: 12px; color: var(--ink-500); display: flex; gap: 16px; flex-wrap: wrap;">
+                    <span><strong>CAS:</strong> ${doc.cas || 'N/A'}</span>
+                    <span><strong>Category:</strong> ${doc.category}</span>
+                    <span><strong>Location:</strong> ${doc.location}</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="window.open('https://chemicalsafety.com/sds-search/?q=${doc.cas}', '_blank')" style="white-space: nowrap;">
+                Open in New Tab
+            </button>
+        </div>
+    `;
+
+    container.appendChild(infoPanel);
     container.appendChild(iframe);
+
+    // If iframe doesn't load after 8 seconds, show helpful message
+    setTimeout(() => {
+        if (!loaded) {
+            const note = document.createElement('div');
+            note.style.marginTop = '16px';
+            note.style.padding = '12px 16px';
+            note.style.background = 'rgba(1, 118, 211, 0.1)';
+            note.style.borderRadius = '8px';
+            note.style.fontSize = '13px';
+            note.style.color = 'var(--ink-700)';
+            note.innerHTML = `
+                <strong>💡 Tip:</strong> If the SDS doesn't display, click "Open in New Tab" above to view it directly on ChemicalSafety.com
+            `;
+            container.appendChild(note);
+        }
+    }, 8000);
 }
 
 // Download button
 document.getElementById('downloadBtn').addEventListener('click', () => {
     if (currentDocument) {
-        window.open(currentDocument.url, '_blank');
+        const url = currentDocument.cas
+            ? `https://chemicalsafety.com/sds-search/?q=${currentDocument.cas}`
+            : currentDocument.url;
+        window.open(url, '_blank');
     }
 });
 
 // Print button
 document.getElementById('printBtn').addEventListener('click', () => {
     if (currentDocument) {
-        window.open(currentDocument.url, '_blank');
+        const url = currentDocument.cas
+            ? `https://chemicalsafety.com/sds-search/?q=${currentDocument.cas}`
+            : currentDocument.url;
+        window.open(url, '_blank');
     }
 });
 
