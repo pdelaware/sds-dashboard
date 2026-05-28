@@ -412,27 +412,369 @@ const office = urlParams.get('office') || 'San Francisco';
 // Set office title
 document.getElementById('officeTitle').textContent = office;
 
-// Sample document data - Replace these URLs with your actual PDF locations
-// Using CAS numbers to fetch SDS from ChemicalSafety.com
+// Sample document data - CAS-based SDS for all 61 global offices
 const sampleDocuments = {
     'San Francisco': [
-        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7681-52-9' },
-        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' },
-        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Janitorial Closet', cas: '1336-21-6' },
-        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7722-84-1' },
-        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
-    ],
-    'Amsterdam': [
-        { name: 'Acetic Acid (Vinegar Cleaner)', category: 'Delimer', location: 'Janitorial closet', cas: '64-19-7' },
-        { name: 'Sodium Hydroxide (Drain Cleaner)', category: 'Restroom Cleaner', location: 'Janitorial closet', cas: '1310-73-2' },
-        { name: 'D-Limonene (Floor Cleaner)', category: 'Floor Cleaner', location: 'Janitorial closet', cas: '5989-27-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Cafeteria', cas: '497-19-8' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Ohana Kitchen', cas: '5989-27-5' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Cafeteria', cas: '1310-73-2' }
     ],
     'Atlanta': [
-        { name: 'Sodium Carbonate (Detergent)', category: 'Detergent', location: 'Ohana Floor Kitchen', cas: '497-19-8' },
-        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Ohana Floor Kitchen', cas: '68391-01-5' },
-        { name: 'Sodium Bicarbonate', category: 'All Purpose Cleaner', location: 'Janitorial Services', cas: '144-55-8' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Cafeteria', cas: '1310-73-2' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'General Office', cas: '64-19-7' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Janitorial Closet', cas: '68391-01-5' }
+    ],
+    'Austin': [
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Cafeteria', cas: '497-19-8' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Cafeteria', cas: '5989-27-5' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' }
+    ],
+    'Boston': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Ohana Kitchen', cas: '77-92-9' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'General Office', cas: '1336-21-6' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Maintenance Room', cas: '64-19-7' }
+    ],
+    'Burlington': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7722-84-1' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7681-52-9' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Cafeteria', cas: '77-92-9' }
+    ],
+    'Chicago': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'General Office', cas: '68391-01-5' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Janitorial Closet', cas: '1336-21-6' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Cafeteria', cas: '67-63-0' }
+    ],
+    'Denver': [
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7681-52-9' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Cafeteria', cas: '77-92-9' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Janitorial Closet', cas: '1336-21-6' }
+    ],
+    'Indianapolis': [
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'General Office', cas: '7681-52-9' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'General Office', cas: '497-19-8' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'General Office', cas: '1310-73-2' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Cafeteria', cas: '64-19-7' }
+    ],
+    'Irvine': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7722-84-1' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'General Office', cas: '497-19-8' }
+    ],
+    'McLean': [
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7681-52-9' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Ohana Kitchen', cas: '1336-21-6' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' }
+    ],
+    'New Jersey': [
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'General Office', cas: '64-19-7' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Cafeteria', cas: '77-92-9' }
+    ],
+    'New York': [
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Maintenance Room', cas: '5989-27-5' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Janitorial Closet', cas: '1310-73-2' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Cafeteria', cas: '1336-21-6' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' }
+    ],
+    'Palo Alto': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '67-63-0' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' }
+    ],
+    'Seattle / Bellevue': [
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7722-84-1' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Maintenance Room', cas: '1310-73-2' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Cafeteria', cas: '68391-01-5' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Cafeteria', cas: '7681-52-9' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' }
+    ],
+    'Washington DC': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Cafeteria', cas: '1310-73-2' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'General Office', cas: '5989-27-5' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'General Office', cas: '68391-01-5' }
+    ],
+    'Toronto': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Ohana Kitchen', cas: '77-92-9' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Maintenance Room', cas: '5989-27-5' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Janitorial Closet', cas: '64-19-7' }
+    ],
+    'Vancouver': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Cafeteria', cas: '67-63-0' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Ohana Kitchen', cas: '64-19-7' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'General Office', cas: '1336-21-6' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Cafeteria', cas: '7722-84-1' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Janitorial Closet', cas: '1310-73-2' }
+    ],
+    'Buenos Aires': [
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Maintenance Room', cas: '64-19-7' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Ohana Kitchen', cas: '1336-21-6' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Cafeteria', cas: '67-63-0' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'General Office', cas: '68391-01-5' }
+    ],
+    'São Paulo': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Janitorial Closet', cas: '68391-01-5' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Ohana Kitchen', cas: '1310-73-2' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'General Office', cas: '77-92-9' }
+    ],
+    'Mexico City': [
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Cafeteria', cas: '5989-27-5' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7681-52-9' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' }
+    ],
+    'Amsterdam': [
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Janitorial Closet', cas: '1336-21-6' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'General Office', cas: '68391-01-5' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'General Office', cas: '64-19-7' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7722-84-1' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Cafeteria', cas: '7681-52-9' }
+    ],
+    'Barcelona': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Janitorial Closet', cas: '67-63-0' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Janitorial Closet', cas: '1336-21-6' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Janitorial Closet', cas: '5989-27-5' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Cafeteria', cas: '7681-52-9' }
+    ],
+    'Berlin': [
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7722-84-1' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Ohana Kitchen', cas: '497-19-8' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Cafeteria', cas: '68391-01-5' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Ohana Kitchen', cas: '1310-73-2' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Maintenance Room', cas: '67-63-0' }
+    ],
+    'Brussels': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Janitorial Closet', cas: '67-63-0' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Cafeteria', cas: '1336-21-6' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Ohana Kitchen', cas: '1310-73-2' }
+    ],
+    'Copenhagen': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Cafeteria', cas: '77-92-9' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Cafeteria', cas: '5989-27-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' }
+    ],
+    'Dublin': [
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Maintenance Room', cas: '7681-52-9' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Maintenance Room', cas: '67-63-0' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'General Office', cas: '64-19-7' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' }
+    ],
+    'Düsseldorf': [
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Maintenance Room', cas: '497-19-8' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'General Office', cas: '64-19-7' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Ohana Kitchen', cas: '1336-21-6' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Cafeteria', cas: '67-63-0' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Ohana Kitchen', cas: '1310-73-2' }
+    ],
+    'Frankfurt': [
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Ohana Kitchen', cas: '1310-73-2' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Janitorial Closet', cas: '5989-27-5' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '67-63-0' }
+    ],
+    'Geneva': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Maintenance Room', cas: '5989-27-5' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Cafeteria', cas: '7722-84-1' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7681-52-9' }
+    ],
+    'Helsinki': [
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Maintenance Room', cas: '497-19-8' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'General Office', cas: '7722-84-1' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '67-63-0' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Cafeteria', cas: '64-19-7' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Ohana Kitchen', cas: '5989-27-5' }
+    ],
+    'Istanbul': [
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Janitorial Closet', cas: '5989-27-5' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Cafeteria', cas: '77-92-9' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Maintenance Room', cas: '1336-21-6' }
+    ],
+    'London': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'General Office', cas: '1310-73-2' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' }
+    ],
+    'Luxembourg': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7722-84-1' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Cafeteria', cas: '1310-73-2' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Ohana Kitchen', cas: '1336-21-6' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Maintenance Room', cas: '497-19-8' }
+    ],
+    'Madrid': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'General Office', cas: '77-92-9' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Cafeteria', cas: '67-63-0' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Cafeteria', cas: '5989-27-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Maintenance Room', cas: '497-19-8' }
+    ],
+    'Milan': [
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Ohana Kitchen', cas: '1310-73-2' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Cafeteria', cas: '497-19-8' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Ohana Kitchen', cas: '5989-27-5' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7681-52-9' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Janitorial Closet', cas: '67-63-0' }
+    ],
+    'Munich': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '68391-01-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' }
+    ],
+    'Oslo': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Maintenance Room', cas: '67-63-0' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7681-52-9' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Maintenance Room', cas: '497-19-8' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Maintenance Room', cas: '1310-73-2' }
+    ],
+    'Paris': [
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'General Office', cas: '5989-27-5' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Ohana Kitchen', cas: '64-19-7' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Cafeteria', cas: '1310-73-2' }
+    ],
+    'Prague': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '67-63-0' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Janitorial Closet', cas: '64-19-7' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Maintenance Room', cas: '7722-84-1' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Ohana Kitchen', cas: '1336-21-6' }
+    ],
+    'Reading': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '68391-01-5' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'General Office', cas: '5989-27-5' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Ohana Kitchen', cas: '64-19-7' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Ohana Kitchen', cas: '1310-73-2' }
+    ],
+    'Rome': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Janitorial Closet', cas: '68391-01-5' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Cafeteria', cas: '1336-21-6' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Cafeteria', cas: '7722-84-1' }
+    ],
+    'Stockholm': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Cafeteria', cas: '67-63-0' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Maintenance Room', cas: '1336-21-6' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Ohana Kitchen', cas: '77-92-9' }
+    ],
+    'Vienna': [
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Cafeteria', cas: '7722-84-1' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Janitorial Closet', cas: '1336-21-6' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Janitorial Closet', cas: '5989-27-5' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' }
+    ],
+    'Warsaw': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Cafeteria', cas: '68391-01-5' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Cafeteria', cas: '7722-84-1' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Cafeteria', cas: '77-92-9' }
+    ],
+    'Zurich': [
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Cafeteria', cas: '5989-27-5' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Cafeteria', cas: '68391-01-5' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Maintenance Room', cas: '1336-21-6' }
+    ],
+    'Johannesburg': [
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Janitorial Closet', cas: '5989-27-5' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Janitorial Closet', cas: '64-19-7' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'General Office', cas: '497-19-8' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' }
+    ],
+    'Cape Town': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'General Office', cas: '77-92-9' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Maintenance Room', cas: '67-63-0' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Ohana Kitchen', cas: '497-19-8' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Janitorial Closet', cas: '64-19-7' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Cafeteria', cas: '7681-52-9' }
+    ],
+    'Lagos': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '67-63-0' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Maintenance Room', cas: '1310-73-2' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Cafeteria', cas: '77-92-9' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'Ohana Kitchen', cas: '5989-27-5' }
+    ],
+    'Auckland': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Maintenance Room', cas: '7681-52-9' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'General Office', cas: '64-19-7' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Maintenance Room', cas: '7722-84-1' }
+    ],
+    'Bangalore': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Janitorial Closet', cas: '67-63-0' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Janitorial Closet', cas: '7722-84-1' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'General Office', cas: '497-19-8' }
+    ],
+    'Hong Kong': [
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'General Office', cas: '1336-21-6' },
+        { name: 'D-Limonene', category: 'Floor Cleaner', location: 'General Office', cas: '5989-27-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'General Office', cas: '497-19-8' }
+    ],
+    'Hyderabad': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'General Office', cas: '67-63-0' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'General Office', cas: '497-19-8' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'General Office', cas: '68391-01-5' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Maintenance Room', cas: '7681-52-9' }
+    ],
+    'Melbourne': [
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Janitorial Closet', cas: '68391-01-5' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'General Office', cas: '1310-73-2' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Janitorial Closet', cas: '67-63-0' }
+    ],
+    'Mumbai': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '68391-01-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Janitorial Closet', cas: '1310-73-2' }
+    ],
+    'Seoul': [
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Maintenance Room', cas: '64-19-7' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Janitorial Closet', cas: '1310-73-2' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Maintenance Room', cas: '67-63-0' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Ohana Kitchen', cas: '77-92-9' }
+    ],
+    'Singapore': [
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Janitorial Closet', cas: '77-92-9' },
+        { name: 'Sodium Hypochlorite (Bleach)', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '7681-52-9' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'Cafeteria', cas: '7722-84-1' }
+    ],
+    'Sydney': [
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'General Office', cas: '7722-84-1' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Maintenance Room', cas: '1336-21-6' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Ohana Kitchen', cas: '67-63-0' },
+        { name: 'Acetic Acid (Vinegar)', category: 'Delimer', location: 'Janitorial Closet', cas: '64-19-7' }
+    ],
+    'Tokyo': [
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'Maintenance Room', cas: '1336-21-6' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Janitorial Closet', cas: '67-63-0' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' }
+    ],
+    'Dubai': [
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Janitorial Closet', cas: '67-63-0' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Cafeteria', cas: '68391-01-5' },
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Cafeteria', cas: '497-19-8' }
+    ],
+    'Nazareth': [
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Janitorial Closet', cas: '497-19-8' },
+        { name: 'Ammonia Solution', category: 'All Purpose Cleaner', location: 'General Office', cas: '1336-21-6' },
+        { name: 'Hydrogen Peroxide', category: 'Sanitizer', location: 'General Office', cas: '7722-84-1' },
+        { name: 'Isopropyl Alcohol', category: 'Sanitizer', location: 'Maintenance Room', cas: '67-63-0' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Maintenance Room', cas: '68391-01-5' }
+    ],
+    'Tel Aviv': [
+        { name: 'Sodium Carbonate', category: 'Detergent', location: 'Cafeteria', cas: '497-19-8' },
+        { name: 'Citric Acid', category: 'Cleaning agent', location: 'Maintenance Room', cas: '77-92-9' },
+        { name: 'Sodium Hydroxide', category: 'Restroom Cleaner', location: 'Janitorial Closet', cas: '1310-73-2' },
+        { name: 'Quaternary Ammonium', category: 'Sanitizer', location: 'Cafeteria', cas: '68391-01-5' }
     ]
 };
+
 
 let currentDocuments = sampleDocuments[office] || sampleDocuments['San Francisco'];
 let filteredDocuments = [...currentDocuments];
