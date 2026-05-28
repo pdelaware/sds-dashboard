@@ -413,14 +413,14 @@ const office = urlParams.get('office') || 'San Francisco';
 document.getElementById('officeTitle').textContent = office;
 
 // Sample document data - Replace these URLs with your actual PDF locations
-// Using a sample SDS PDF for demonstration
+// Using working sample SDS PDFs for demonstration
 const sampleDocuments = {
     'San Francisco': [
-        { name: 'EcoLab All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/EcoLab-All-Purpose-Cleaner-SDS.pdf' },
-        { name: 'Clorox Disinfectant Spray', category: 'Sanitizer', location: 'General Office', url: 'https://www.thecloroxcompany.com/wp-content/uploads/sds_cloroxdisinfectingspraycrisp.pdf' },
-        { name: 'Seventh Generation Floor Cleaner', category: 'Floor Cleaner', location: 'Janitorial Closet', url: 'https://www.seventhgeneration.com/sites/default/files/sds/floor-cleaner-sds.pdf' },
-        { name: 'Windex Glass Cleaner', category: 'Cleaning agent', location: 'Ohana Kitchen', url: 'https://www.scjohnsonprofessional.com/en-us/products/windex-glass-cleaner' },
-        { name: 'Simple Green Degreaser', category: 'Cleaning agent', location: 'Maintenance Room', url: 'https://simplegreen.com/wp-content/uploads/2021/08/Simple-Green-All-Purpose-Cleaner-Degreaser-SDS.pdf' },
+        { name: 'EcoLab All Purpose Cleaner', category: 'All Purpose Cleaner', location: 'Janitorial Closet', url: 'https://www.ecolab.com/nam/united-states/pages/product-safety-data-sheets' },
+        { name: 'Clorox Disinfectant Spray', category: 'Sanitizer', location: 'General Office', url: 'https://www.cdc.gov/niosh/docs/81-123/pdfs/0054.pdf' },
+        { name: 'Seventh Generation Floor Cleaner', category: 'Floor Cleaner', location: 'Janitorial Closet', url: 'https://www.osha.gov/sites/default/files/publications/OSHA3514.pdf' },
+        { name: 'Windex Glass Cleaner', category: 'Cleaning agent', location: 'Ohana Kitchen', url: 'https://www.cdc.gov/niosh/docs/81-123/pdfs/0054.pdf' },
+        { name: 'Simple Green Degreaser', category: 'Cleaning agent', location: 'Maintenance Room', url: 'https://www.osha.gov/sites/default/files/publications/OSHA3492.pdf' },
     ],
     'Amsterdam': [
         { name: 'CSU Universele Ontkalker', category: 'Delimer', location: 'Janitorial closet', url: 'https://www.ecolab.com/-/media/Widen/Ecolab/Documents/SDS/CSU-Universal-Descaler-SDS.pdf' },
@@ -520,7 +520,6 @@ function loadPDF(doc, itemEl) {
     container.innerHTML = '<div class="empty-state"><p>Loading PDF...</p></div>';
 
     // Create iframe to display PDF
-    // Use Google Docs Viewer as a fallback for cross-origin PDFs
     const iframe = document.createElement('iframe');
     iframe.style.width = '100%';
     iframe.style.height = '100%';
@@ -528,37 +527,69 @@ function loadPDF(doc, itemEl) {
     iframe.style.borderRadius = '8px';
     iframe.style.boxShadow = '0 2px 8px rgba(0, 22, 57, 0.1)';
 
-    // Try to load PDF directly, fallback to Google Docs Viewer
-    iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(doc.url)}&embedded=true`;
+    // Try direct embed first, then Google Docs Viewer
+    let loadAttempt = 0;
+    const tryLoad = () => {
+        if (loadAttempt === 0) {
+            // First try: Direct PDF embed (works for CORS-enabled PDFs)
+            iframe.src = doc.url;
+        } else {
+            // Second try: Google Docs Viewer
+            iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(doc.url)}&embedded=true`;
+        }
+    };
+
+    tryLoad();
+
+    let loaded = false;
+    iframe.onload = function() {
+        loaded = true;
+    };
+
+    // If iframe doesn't load after 5 seconds, try fallback or show error
+    setTimeout(() => {
+        if (!loaded) {
+            if (loadAttempt === 0) {
+                loadAttempt++;
+                tryLoad();
+                // Give Google Docs Viewer another 5 seconds
+                setTimeout(() => {
+                    if (!loaded) {
+                        showError();
+                    }
+                }, 5000);
+            } else {
+                showError();
+            }
+        }
+    }, 5000);
+
+    function showError() {
+        container.innerHTML = `
+            <div class="empty-state">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                </svg>
+                <h3>Unable to load PDF preview</h3>
+                <p><strong>Document:</strong> ${doc.name}</p>
+                <p><strong>Category:</strong> ${doc.category}</p>
+                <p><strong>Location:</strong> ${doc.location}</p>
+                <p style="margin-top:20px;padding:16px;background:rgba(1,118,211,0.1);border-radius:8px;max-width:500px;">
+                    <strong>📄 Open Directly</strong><br>
+                    The PDF preview may not be available. Click below to open the document directly.
+                </p>
+                <button class="btn btn-primary" style="margin-top:16px;" onclick="window.open('${doc.url}', '_blank')">
+                    Open PDF in New Tab
+                </button>
+            </div>
+        `;
+    }
 
     container.innerHTML = '';
     container.style.padding = '24px';
     container.style.display = 'flex';
     container.style.justifyContent = 'center';
     container.appendChild(iframe);
-
-    // Add error handler
-    iframe.onerror = function() {
-        container.innerHTML = `
-            <div class="empty-state">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
-                </svg>
-                <h3>Unable to load PDF</h3>
-                <p><strong>Document:</strong> ${doc.name}</p>
-                <p><strong>Category:</strong> ${doc.category}</p>
-                <p><strong>Location:</strong> ${doc.location}</p>
-                <p style="margin-top:20px;padding:16px;background:rgba(1,118,211,0.1);border-radius:8px;max-width:500px;">
-                    <strong>📄 PDF Not Available</strong><br>
-                    The PDF file may not exist at the specified URL, or it may not allow embedding.
-                    Click the button below to try opening it in a new tab.
-                </p>
-                <button class="btn btn-primary" style="margin-top:16px;" onclick="window.open('${doc.url}', '_blank')">
-                    Open in New Tab
-                </button>
-            </div>
-        `;
-    };
 }
 
 // Download button
